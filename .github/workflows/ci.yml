@@ -1,0 +1,69 @@
+name: CI
+
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  repo-health:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate required files
+        shell: bash
+        run: |
+          set -euo pipefail
+          required_files=(
+            "README.md"
+            "CONTRIBUTING.md"
+            "AGENTS.md"
+            ".gitignore"
+            ".codex/config.toml"
+            "requirements.toml"
+            "docs/overview.md"
+            "skills/feature-spec/SKILL.md"
+            "skills/pr-review/SKILL.md"
+            "skills/bug-triage/SKILL.md"
+          )
+
+          for f in "${required_files[@]}"; do
+            if [[ ! -f "$f" ]]; then
+              echo "Missing required file: $f"
+              exit 1
+            fi
+          done
+
+      - name: Basic markdown sanity check
+        shell: bash
+        run: |
+          set -euo pipefail
+          while IFS= read -r file; do
+            if [[ ! -s "$file" ]]; then
+              echo "Markdown file is empty: $file"
+              exit 1
+            fi
+          done < <(find . -name "*.md" -type f)
+
+      - name: Optional Swift formatting/lint checks
+        shell: bash
+        run: |
+          set -euo pipefail
+          if command -v swiftformat >/dev/null 2>&1; then
+            echo "Running swiftformat --lint"
+            swiftformat . --lint
+          else
+            echo "TODO: SwiftFormat is not installed in CI image. Skipping."
+          fi
+
+          if command -v swiftlint >/dev/null 2>&1; then
+            echo "Running swiftlint"
+            swiftlint
+          else
+            echo "TODO: SwiftLint is not installed in CI image. Skipping."
+          fi

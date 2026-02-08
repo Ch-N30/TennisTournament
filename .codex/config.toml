@@ -1,0 +1,29 @@
+# Project-level Codex configuration for TennisTournament.
+# Keep settings conservative and repo-scoped.
+
+[project]
+name = "TennisTournament"
+workspace_root = "."
+
+[safety]
+allow_write_outside_repo = false
+allow_destructive_git = false
+allow_network = false
+
+[skills]
+paths = ["./skills"]
+
+[mcp.servers.filesystem]
+# TODO: fill exact config per MCP server implementation.
+# Intended baseline: only current repository is allowed.
+allowed_paths = ["./"]
+
+[mcp.servers.git]
+# TODO: fill exact config per MCP server implementation.
+# Example intent: enable repository-local git operations only.
+enabled = false
+
+[mcp.servers.github]
+# TODO: fill exact config per MCP server implementation.
+# Example intent: enable GitHub operations after explicit user setup.
+enabled = false

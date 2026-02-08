@@ -1,0 +1,23 @@
+# Operational constraints for coding agents in this repository.
+
+[boundaries]
+repo_root_only = true
+forbid_write_outside_repo = true
+forbid_recursive_delete = true
+forbid_git_push = true
+
+[engineering]
+minimal_diff_required = true
+respect_existing_changes = true
+
+[quality]
+require_domain_tests_for_rule_changes = true
+require_regression_test_for_bugfix_in_domain = true
+
+[documentation]
+require_docs_update_for_new_or_changed_rules = true
+docs_root = "docs"
+specs_root = "docs/specs"
+
+[workflow]
+if_ambiguous_requirements_then_add_todo_in_specs = true
