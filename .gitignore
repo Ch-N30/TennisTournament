@@ -44,6 +44,8 @@ Carthage/Build/
 *.swp
 *.tmp
 
-# IDEs
+# IDEs and assistant-local files
 .vscode/
 .idea/
+.cursor/
+CLAUDE.md
