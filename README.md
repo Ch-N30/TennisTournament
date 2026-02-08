@@ -30,6 +30,12 @@ This repository contains an iOS application for managing tennis tournaments with
 - `TennisTournamentPackage/Sources/TennisTournamentFeature/Features/` - feature screens and view models
 - `TennisTournamentPackage/Tests/TennisTournamentFeatureTests/` - domain and feature unit tests
 
+## Initial app flow
+- Onboarding screen
+- Authorization screen (surname + gender, local persistence)
+- Main tabs: Matches, Tournaments, Profile
+- Match setup and tournament setup screens are intentionally postponed
+
 ## Repo structure
 - `/Users/nikolaychunikhin/TennisTournament/README.md` - onboarding and scope
 - `/Users/nikolaychunikhin/TennisTournament/CONTRIBUTING.md` - branch/PR/review rules

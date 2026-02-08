@@ -8,20 +8,27 @@ public struct AppRootView: View {
     }
 
     public var body: some View {
-        NavigationStack(path: $coordinator.path) {
-            TournamentListScreen(
-                viewModel: coordinator.tournamentListViewModel,
-                onAddTournament: coordinator.showCreateTournament,
-                onTournamentSelected: { tournament in
-                    coordinator.showTournamentDetails(id: tournament.id)
+        Group {
+            switch coordinator.flow {
+            case .onboarding:
+                OnboardingScreen {
+                    coordinator.completeOnboarding()
                 }
-            )
-            .navigationDestination(for: AppRoute.self) { route in
-                switch route {
-                case .createTournament:
-                    CreateTournamentScreen()
-                case let .tournamentDetails(id):
-                    TournamentDetailsScreen(tournamentID: id)
+            case .authorization:
+                AuthScreen { surname, gender in
+                    coordinator.completeAuthorization(surname: surname, gender: gender)
+                }
+            case .appTabs:
+                if let profile = coordinator.userProfile {
+                    MainTabScreen(
+                        tournamentListViewModel: coordinator.tournamentListViewModel,
+                        userProfile: profile,
+                        onResetProfile: {
+                            coordinator.resetAuthorization()
+                        }
+                    )
+                } else {
+                    ProgressView("Loading profile...")
                 }
             }
         }

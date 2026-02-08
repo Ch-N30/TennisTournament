@@ -1,35 +1,43 @@
 # Project Architecture Bootstrap
 
 ## Context
-Initial architecture bootstrap for the iOS app with MVVM plus Coordinator navigation.
+Architecture bootstrap for the first runnable app flow using MVVM and Coordinator.
 
 ## User stories
-- As a developer, I can navigate from tournament list to creation and details placeholders.
-- As a developer, I can implement domain rules in pure Swift without UI framework coupling.
+- As a first-time user, I see onboarding before entering the app.
+- As a user, I provide surname and gender once and enter the app.
+- As a user, I can access three core sections: Matches, Tournaments, Profile.
+- As a developer, I can keep domain logic independent from UI frameworks.
 
 ## Acceptance criteria
-- App starts with `AppRootView` powered by `AppCoordinator`.
-- Navigation routes are centralized in coordinator.
-- Tournament list uses `TournamentListViewModel` and repository abstraction.
-- Domain standings calculator is pure Swift and unit-tested.
+- App starts with `AppRootView` and flow is controlled by `AppCoordinator`.
+- Launch sequence is `Onboarding -> Authorization -> Tabs`.
+- Authorization persists surname and gender locally.
+- Tabs include exactly `Matches`, `Tournaments`, and `Profile`.
+- Tournament setup and match setup screens are out of scope for this iteration.
 
 ## Edge cases
-- Tie in standings requires deterministic fallback ordering.
-- Empty tournament list should still render safely.
+- Empty/whitespace surname cannot be submitted.
+- If profile is cleared, app returns to authorization.
+- Existing profile with completed onboarding opens tabs directly.
 
 ## Data model impact
-- Added `TournamentSummary` domain model.
-- Added standings models: `ParticipantRecord` and `StandingsEntry`.
+- Added `UserProfile` and `UserGender`.
+- Added `AppSessionStoring` with `UserDefaults` implementation.
+- Preserved `TournamentSummary` and standings domain models.
 
 ## UI screens
-- `TournamentListScreen`
-- `CreateTournamentScreen` (placeholder)
-- `TournamentDetailsScreen` (placeholder)
+- `OnboardingScreen`
+- `AuthScreen`
+- `MatchesHomeScreen`
+- `TournamentsHomeScreen`
+- `ProfileScreen`
 
 ## Test plan
-- Unit tests for standings ordering and tie-break fallback.
-- Unit test for list view model repository loading behavior.
+- Unit tests for coordinator flow transitions.
+- Unit tests for authorization input validation.
+- Existing unit tests for standings ordering and tournament list loading remain active.
 
 ## TODO
-- Finalize tournament formats and tie-break policy in dedicated feature specs.
-- Define persistence boundary after SwiftData/CoreData decision.
+- Define localization policy for onboarding/auth/profile copy.
+- Define next specs for match setup and tournament setup flows.
