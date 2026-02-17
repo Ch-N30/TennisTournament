@@ -23,8 +23,8 @@ public struct AppRootView: View {
                     MainTabScreen(
                         tournamentListViewModel: coordinator.tournamentListViewModel,
                         userProfile: profile,
-                        onResetProfile: {
-                            coordinator.resetAuthorization()
+                        onUpdateProfile: { name, surname, gender in
+                            coordinator.updateProfile(name: name, surname: surname, gender: gender)
                         }
                     )
                 } else {

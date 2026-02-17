@@ -49,6 +49,21 @@ struct AppCoordinatorTests {
         #expect(coordinator.flow == .appTabs)
         #expect(coordinator.userProfile == profile)
     }
+
+    @Test("Updates profile without leaving app tabs")
+    func updatesProfileWithoutAuthorizationFlow() {
+        let initialProfile = UserProfile(name: "Rafael", surname: "Nadal", gender: .male)
+        let store = InMemoryAppSessionStore(onboardingCompleted: true, profile: initialProfile)
+        let dependencies = AppDependencyContainer(sessionStore: store)
+
+        let coordinator = AppCoordinator(dependencies: dependencies)
+        coordinator.updateProfile(name: " Carlos ", surname: " Alcaraz ", gender: .male)
+
+        let expected = UserProfile(name: "Carlos", surname: "Alcaraz", gender: .male)
+        #expect(coordinator.flow == .appTabs)
+        #expect(coordinator.userProfile == expected)
+        #expect(store.profile == expected)
+    }
 }
 
 private final class InMemoryAppSessionStore: AppSessionStoring {

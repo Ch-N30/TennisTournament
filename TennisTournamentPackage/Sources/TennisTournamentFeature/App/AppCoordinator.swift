@@ -52,6 +52,18 @@ public final class AppCoordinator: ObservableObject {
         flow = .appTabs
     }
 
+    public func updateProfile(name: String, surname: String, gender: UserGender) {
+        let normalizedName = name.trimmingCharacters(in: .whitespacesAndNewlines)
+        let normalizedSurname = surname.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !normalizedName.isEmpty, !normalizedSurname.isEmpty else {
+            return
+        }
+
+        let profile = UserProfile(name: normalizedName, surname: normalizedSurname, gender: gender)
+        dependencies.sessionStore.saveUserProfile(profile)
+        userProfile = profile
+    }
+
     public func resetAuthorization() {
         dependencies.sessionStore.clearUserProfile()
         userProfile = nil
