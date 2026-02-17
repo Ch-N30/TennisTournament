@@ -15,16 +15,16 @@ public struct AppRootView: View {
                     coordinator.completeOnboarding()
                 }
             case .authorization:
-                AuthScreen { surname, gender in
-                    coordinator.completeAuthorization(surname: surname, gender: gender)
+                AuthScreen { name, surname, gender in
+                    coordinator.completeAuthorization(name: name, surname: surname, gender: gender)
                 }
             case .appTabs:
                 if let profile = coordinator.userProfile {
                     MainTabScreen(
                         tournamentListViewModel: coordinator.tournamentListViewModel,
                         userProfile: profile,
-                        onResetProfile: {
-                            coordinator.resetAuthorization()
+                        onUpdateProfile: { name, surname, gender in
+                            coordinator.updateProfile(name: name, surname: surname, gender: gender)
                         }
                     )
                 } else {

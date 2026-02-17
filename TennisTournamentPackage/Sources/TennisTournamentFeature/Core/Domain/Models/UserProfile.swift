@@ -15,10 +15,12 @@ public enum UserGender: String, Codable, CaseIterable, Hashable, Sendable, Ident
 }
 
 public struct UserProfile: Codable, Hashable, Sendable {
+    public let name: String
     public let surname: String
     public let gender: UserGender
 
-    public init(surname: String, gender: UserGender) {
+    public init(name: String, surname: String, gender: UserGender) {
+        self.name = name
         self.surname = surname
         self.gender = gender
     }
