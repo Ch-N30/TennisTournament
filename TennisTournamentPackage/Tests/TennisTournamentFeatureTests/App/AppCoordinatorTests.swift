@@ -31,16 +31,16 @@ struct AppCoordinatorTests {
         let dependencies = AppDependencyContainer(sessionStore: store)
 
         let coordinator = AppCoordinator(dependencies: dependencies)
-        coordinator.completeAuthorization(surname: " Djokovic ", gender: .male)
+        coordinator.completeAuthorization(name: " Novak ", surname: " Djokovic ", gender: .male)
 
         #expect(coordinator.flow == .appTabs)
-        #expect(coordinator.userProfile == UserProfile(surname: "Djokovic", gender: .male))
-        #expect(store.profile == UserProfile(surname: "Djokovic", gender: .male))
+        #expect(coordinator.userProfile == UserProfile(name: "Novak", surname: "Djokovic", gender: .male))
+        #expect(store.profile == UserProfile(name: "Novak", surname: "Djokovic", gender: .male))
     }
 
     @Test("Starts directly in tabs when onboarding and profile exist")
     func startsDirectlyInTabsWhenSessionIsReady() {
-        let profile = UserProfile(surname: "Nadal", gender: .male)
+        let profile = UserProfile(name: "Rafael", surname: "Nadal", gender: .male)
         let store = InMemoryAppSessionStore(onboardingCompleted: true, profile: profile)
         let dependencies = AppDependencyContainer(sessionStore: store)
 

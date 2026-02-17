@@ -15,8 +15,8 @@ public struct AppRootView: View {
                     coordinator.completeOnboarding()
                 }
             case .authorization:
-                AuthScreen { surname, gender in
-                    coordinator.completeAuthorization(surname: surname, gender: gender)
+                AuthScreen { name, surname, gender in
+                    coordinator.completeAuthorization(name: name, surname: surname, gender: gender)
                 }
             case .appTabs:
                 if let profile = coordinator.userProfile {

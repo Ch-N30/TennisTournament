@@ -3,11 +3,11 @@ import SwiftUI
 public struct AuthScreen: View {
     @StateObject private var viewModel: AuthViewModel
 
-    private let onSubmit: (String, UserGender) -> Void
+    private let onSubmit: (String, String, UserGender) -> Void
 
     public init(
         viewModel: AuthViewModel = AuthViewModel(),
-        onSubmit: @escaping (String, UserGender) -> Void
+        onSubmit: @escaping (String, String, UserGender) -> Void
     ) {
         _viewModel = StateObject(wrappedValue: viewModel)
         self.onSubmit = onSubmit
@@ -16,7 +16,11 @@ public struct AuthScreen: View {
     public var body: some View {
         NavigationStack {
             Form {
-                Section("Profile") {
+                Section() {
+                    TextField("Name", text: $viewModel.name)
+                        .textInputAutocapitalization(.words)
+                        .autocorrectionDisabled()
+
                     TextField("Surname", text: $viewModel.surname)
                         .textInputAutocapitalization(.words)
                         .autocorrectionDisabled()
@@ -31,7 +35,7 @@ public struct AuthScreen: View {
 
                 Section {
                     Button("Save and continue") {
-                        onSubmit(viewModel.trimmedSurname, viewModel.gender)
+                        onSubmit(viewModel.trimmedName, viewModel.trimmedSurname, viewModel.gender)
                     }
                     .disabled(!viewModel.canSubmit)
                 }
@@ -39,4 +43,10 @@ public struct AuthScreen: View {
             .navigationTitle("Authorization")
         }
     }
+}
+
+#Preview {
+	AuthScreen(viewModel: AuthViewModel()) { _, _, _ in
+		
+	}
 }

@@ -11,7 +11,8 @@ public struct ProfileScreen: View {
 
     public var body: some View {
         Form {
-            Section("User") {
+            Section() {
+                LabeledContent("Name", value: profile.name)
                 LabeledContent("Surname", value: profile.surname)
                 LabeledContent("Gender", value: profile.gender.title)
             }
@@ -25,4 +26,15 @@ public struct ProfileScreen: View {
         }
         .navigationTitle("Profile")
     }
+}
+
+#Preview {
+	ProfileScreen(
+		profile: UserProfile(
+			name: "Вася",
+			surname: "Пупкин",
+			gender: .male
+		),
+		onResetProfile: {}
+	)
 }
