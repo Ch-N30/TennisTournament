@@ -49,3 +49,6 @@ Carthage/Build/
 .idea/
 .cursor/
 CLAUDE.md
+
+# SwiftLint Remote Config Cache
+.swiftlint/RemoteConfigCache
