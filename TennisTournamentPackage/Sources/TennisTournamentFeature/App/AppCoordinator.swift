@@ -50,16 +50,29 @@ public final class AppCoordinator: ObservableObject {
         }
     }
 
-    public func completeAuthorization(surname: String, gender: UserGender) {
+    public func completeAuthorization(name: String, surname: String, gender: UserGender) {
+        let normalizedName = name.trimmingCharacters(in: .whitespacesAndNewlines)
         let normalizedSurname = surname.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !normalizedSurname.isEmpty else {
+        guard !normalizedName.isEmpty, !normalizedSurname.isEmpty else {
             return
         }
 
-        let profile = UserProfile(surname: normalizedSurname, gender: gender)
+        let profile = UserProfile(name: normalizedName, surname: normalizedSurname, gender: gender)
         dependencies.sessionStore.saveUserProfile(profile)
         userProfile = profile
         flow = .appTabs
+    }
+
+    public func updateProfile(name: String, surname: String, gender: UserGender) {
+        let normalizedName = name.trimmingCharacters(in: .whitespacesAndNewlines)
+        let normalizedSurname = surname.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !normalizedName.isEmpty, !normalizedSurname.isEmpty else {
+            return
+        }
+
+        let profile = UserProfile(name: normalizedName, surname: normalizedSurname, gender: gender)
+        dependencies.sessionStore.saveUserProfile(profile)
+        userProfile = profile
     }
 
     public func resetAuthorization() {

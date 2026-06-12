@@ -5,16 +5,16 @@ public struct MainTabScreen: View {
 
     private let tournamentListViewModel: TournamentListViewModel
     private let userProfile: UserProfile
-    private let onResetProfile: () -> Void
+    private let onUpdateProfile: (String, String, UserGender) -> Void
 
     public init(
         tournamentListViewModel: TournamentListViewModel,
         userProfile: UserProfile,
-        onResetProfile: @escaping () -> Void
+        onUpdateProfile: @escaping (String, String, UserGender) -> Void
     ) {
         self.tournamentListViewModel = tournamentListViewModel
         self.userProfile = userProfile
-        self.onResetProfile = onResetProfile
+        self.onUpdateProfile = onUpdateProfile
     }
 
     public var body: some View {
@@ -36,7 +36,7 @@ public struct MainTabScreen: View {
             .tag(AppTab.tournaments)
 
             NavigationStack {
-                ProfileScreen(profile: userProfile, onResetProfile: onResetProfile)
+                ProfileScreen(profile: userProfile, onUpdateProfile: onUpdateProfile)
             }
             .tabItem {
                 Label("Profile", systemImage: "person.crop.circle")
