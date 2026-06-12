@@ -11,19 +11,25 @@ let package = Package(
         .library(
             name: "TennisTournamentFeature",
             targets: ["TennisTournamentFeature"]
-        ),
+        )
+    ],
+    dependencies: [
+        .package(url: "https://github.com/Ch-N30/LoGGer.git", branch: "main")
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
         // Targets can depend on other targets in this package and products from dependencies.
         .target(
-            name: "TennisTournamentFeature"
+            name: "TennisTournamentFeature",
+            dependencies: [
+                .product(name: "LoGGer", package: "LoGGer")
+            ]
         ),
         .testTarget(
             name: "TennisTournamentFeatureTests",
             dependencies: [
                 "TennisTournamentFeature"
             ]
-        ),
+        )
     ]
 )

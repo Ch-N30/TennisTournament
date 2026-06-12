@@ -1,3 +1,4 @@
+import LoGGer
 import Testing
 @testable import TennisTournamentFeature
 
@@ -6,7 +7,7 @@ struct AppCoordinatorTests {
     @Test("Starts with onboarding when app is launched first time")
     func startsWithOnboardingForFirstLaunch() {
         let store = InMemoryAppSessionStore(onboardingCompleted: false, profile: nil)
-        let dependencies = AppDependencyContainer(sessionStore: store)
+        let dependencies = AppDependencyContainer(sessionStore: store, logger: Logger {})
 
         let coordinator = AppCoordinator(dependencies: dependencies)
 
@@ -16,7 +17,7 @@ struct AppCoordinatorTests {
     @Test("Moves to authorization after onboarding when profile is missing")
     func movesToAuthorizationAfterOnboarding() {
         let store = InMemoryAppSessionStore(onboardingCompleted: false, profile: nil)
-        let dependencies = AppDependencyContainer(sessionStore: store)
+        let dependencies = AppDependencyContainer(sessionStore: store, logger: Logger {})
 
         let coordinator = AppCoordinator(dependencies: dependencies)
         coordinator.completeOnboarding()
@@ -28,7 +29,7 @@ struct AppCoordinatorTests {
     @Test("Stores profile and opens app tabs after authorization")
     func storesProfileAndOpensTabsAfterAuthorization() {
         let store = InMemoryAppSessionStore(onboardingCompleted: true, profile: nil)
-        let dependencies = AppDependencyContainer(sessionStore: store)
+        let dependencies = AppDependencyContainer(sessionStore: store, logger: Logger {})
 
         let coordinator = AppCoordinator(dependencies: dependencies)
         coordinator.completeAuthorization(name: " Novak ", surname: " Djokovic ", gender: .male)
@@ -42,7 +43,7 @@ struct AppCoordinatorTests {
     func startsDirectlyInTabsWhenSessionIsReady() {
         let profile = UserProfile(name: "Rafael", surname: "Nadal", gender: .male)
         let store = InMemoryAppSessionStore(onboardingCompleted: true, profile: profile)
-        let dependencies = AppDependencyContainer(sessionStore: store)
+        let dependencies = AppDependencyContainer(sessionStore: store, logger: Logger {})
 
         let coordinator = AppCoordinator(dependencies: dependencies)
 

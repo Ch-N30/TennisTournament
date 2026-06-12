@@ -24,6 +24,7 @@ jobs:
             "CONTRIBUTING.md"
             "AGENTS.md"
             ".gitignore"
+            ".swiftlint.yml"
             ".codex/config.toml"
             "requirements.toml"
             "docs/overview.md"
@@ -50,7 +51,7 @@ jobs:
             fi
           done < <(find . -name "*.md" -type f)
 
-      - name: Optional Swift formatting/lint checks
+      - name: Optional Swift formatting check
         shell: bash
         run: |
           set -euo pipefail
@@ -61,9 +62,21 @@ jobs:
             echo "TODO: SwiftFormat is not installed in CI image. Skipping."
           fi
 
-          if command -v swiftlint >/dev/null 2>&1; then
-            echo "Running swiftlint"
-            swiftlint
-          else
-            echo "TODO: SwiftLint is not installed in CI image. Skipping."
-          fi
+  swiftlint:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install SwiftLint
+        shell: bash
+        run: |
+          set -euo pipefail
+          brew install swiftlint
+
+      - name: Run SwiftLint
+        shell: bash
+        run: |
+          set -euo pipefail
+          swiftlint lint --strict --config .swiftlint.yml

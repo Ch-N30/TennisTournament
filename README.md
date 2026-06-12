@@ -17,6 +17,27 @@ This repository contains an iOS application for managing tennis tournaments with
 4. Read product/domain baseline in `/Users/nikolaychunikhin/TennisTournament/docs/overview.md`.
 5. Use command playbooks in `/Users/nikolaychunikhin/TennisTournament/commands/` and skills in `/Users/nikolaychunikhin/TennisTournament/skills/`.
 
+## Lint
+This project uses SwiftLint with shared rules from `Ch-N30/ios-code-style`.
+
+Install SwiftLint:
+
+```sh
+brew install swiftlint
+```
+
+Run lint:
+
+```sh
+swiftlint lint --config .swiftlint.yml
+```
+
+Apply safe autocorrections:
+
+```sh
+swiftlint --fix --config .swiftlint.yml
+```
+
 ## MVP scope (draft)
 - Tournament setup for common formats (groups + playoff)
 - Match score tracking

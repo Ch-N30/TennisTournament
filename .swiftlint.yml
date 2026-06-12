@@ -1,0 +1,13 @@
+parent_config: https://raw.githubusercontent.com/Ch-N30/ios-code-style/v1.0.0/swiftlint/base.yml
+
+remote_timeout: 5
+remote_timeout_if_cached: 1
+
+included:
+  - TennisTournament
+  - TennisTournamentPackage/Package.swift
+  - TennisTournamentPackage/Sources
+
+excluded:
+  - .build
+  - DerivedData

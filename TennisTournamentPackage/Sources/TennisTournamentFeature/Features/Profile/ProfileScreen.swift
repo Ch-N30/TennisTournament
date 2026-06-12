@@ -30,7 +30,7 @@ public struct ProfileScreen: View {
 
     public var body: some View {
         Form {
-            Section() {
+            Section {
                 TextField("Name", text: $name)
                     .textInputAutocapitalization(.words)
                     .autocorrectionDisabled()
@@ -40,8 +40,8 @@ public struct ProfileScreen: View {
                     .autocorrectionDisabled()
 
                 Picker("Gender", selection: $gender) {
-                    ForEach(UserGender.allCases) { g in
-                        Text(g.title).tag(g)
+                    ForEach(UserGender.allCases) { gender in
+                        Text(gender.title).tag(gender)
                     }
                 }
                 .pickerStyle(.segmented)
@@ -55,8 +55,8 @@ public struct ProfileScreen: View {
         .onChange(of: gender) { _, _ in persistIfNeeded() }
     }
 
-    private func syncFromProfile(_ p: UserProfile? = nil) {
-        let source = p ?? profile
+    private func syncFromProfile(_ profile: UserProfile? = nil) {
+        let source = profile ?? self.profile
         name = source.name
         surname = source.surname
         gender = source.gender

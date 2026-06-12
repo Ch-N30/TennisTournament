@@ -1,5 +1,6 @@
 import Combine
 import Foundation
+import LoGGer
 
 public enum AppFlow: Equatable {
     case onboarding
@@ -15,9 +16,11 @@ public final class AppCoordinator: ObservableObject {
     public let tournamentListViewModel: TournamentListViewModel
 
     private let dependencies: AppDependencyContainer
+    private let appLogger: ScopedLogger
 
     public init(dependencies: AppDependencyContainer = AppDependencyContainer()) {
         self.dependencies = dependencies
+        self.appLogger = dependencies.logger.scoped(to: "App")
         self.tournamentListViewModel = TournamentListViewModel(repository: dependencies.tournamentRepository)
         let profile = dependencies.sessionStore.loadUserProfile()
         self.userProfile = profile
@@ -29,6 +32,14 @@ public final class AppCoordinator: ObservableObject {
         } else {
             self.flow = .appTabs
         }
+
+        appLogger.debug(
+            "App coordinator initialized",
+            metadata: [
+                "flow": String(describing: flow),
+                "hasProfile": profile != nil
+            ]
+        )
     }
 
     public func completeOnboarding() {
