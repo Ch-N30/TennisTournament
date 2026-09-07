@@ -30,9 +30,6 @@
       shouldUseLaunchSchemeArgsEnv = "YES">
       <TestPlans>
          <TestPlanReference
-            reference = "container:TennisTournament.xctestplan">
-         </TestPlanReference>
-         <TestPlanReference
             reference = "container:TennisTournament/TennisTournament.xctestplan"
             default = "YES">
          </TestPlanReference>

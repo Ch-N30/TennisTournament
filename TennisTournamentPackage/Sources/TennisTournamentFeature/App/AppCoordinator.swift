@@ -94,6 +94,8 @@ public final class AppCoordinator: ObservableObject {
 
     public func resetAuthorization() {
         dependencies.sessionStore.clearUserProfile()
+        navigationStore.popToRoot()
+        navigationStore.dismissModal()
         userProfile = nil
         flow = .authorization
     }
@@ -162,6 +164,7 @@ public final class AppCoordinator: ObservableObject {
     private func openTournament(id: TournamentSummary.ID, pathSuffix: [AppRoute]) -> Bool {
         guard tournamentListViewModel.tournament(id: id) != nil else { return false }
         selectedTab = .tournaments
+        navigationStore.dismissModal()
         navigationStore.setPath([.details(id: id)] + pathSuffix)
         return true
     }

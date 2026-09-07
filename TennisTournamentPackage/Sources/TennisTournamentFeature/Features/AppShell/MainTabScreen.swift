@@ -4,8 +4,8 @@ import SwiftUI
 public struct MainTabScreen: View {
     @Binding private var selectedTab: AppTab
     @ObservedObject private var navigationStore: SwiftUINavigationStore<AppRoute, AppModalRoute>
+    @ObservedObject private var tournamentListViewModel: TournamentListViewModel
 
-    private let tournamentListViewModel: TournamentListViewModel
     private let userProfile: UserProfile
     private let onUpdateProfile: (String, String, UserGender) -> Void
     private let onSelectTournament: (TournamentSummary.ID) -> Void
