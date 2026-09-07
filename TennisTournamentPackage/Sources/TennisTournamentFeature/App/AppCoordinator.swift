@@ -103,4 +103,16 @@ public final class AppCoordinator: ObservableObject {
     public func popToTournamentList() {
         navigationStore.popToRoot()
     }
+
+    public func showSettings() {
+        navigationStore.present(.settings)
+    }
+
+    public func showTournamentEditor(id: TournamentSummary.ID) {
+        navigationStore.present(.editor(itemID: id))
+    }
+
+    public func dismissModal() {
+        navigationStore.dismissModal()
+    }
 }

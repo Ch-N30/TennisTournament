@@ -30,7 +30,10 @@ public struct AppRootView: View {
                         },
                         onSelectTournament: coordinator.showTournamentDetails,
                         onShowProfile: coordinator.showCurrentProfile,
-                        onPopToTournamentList: coordinator.popToTournamentList
+                        onPopToTournamentList: coordinator.popToTournamentList,
+                        onShowSettings: coordinator.showSettings,
+                        onShowTournamentEditor: coordinator.showTournamentEditor,
+                        onDismissModal: coordinator.dismissModal
                     )
                 } else {
                     ProgressView("Loading profile...")

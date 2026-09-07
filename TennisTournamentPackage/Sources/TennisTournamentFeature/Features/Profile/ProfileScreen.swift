@@ -3,6 +3,7 @@ import SwiftUI
 public struct ProfileScreen: View {
     private let profile: UserProfile
     private let onUpdateProfile: (String, String, UserGender) -> Void
+    private let onShowSettings: (() -> Void)?
 
     @State private var name: String = ""
     @State private var surname: String = ""
@@ -10,10 +11,12 @@ public struct ProfileScreen: View {
 
     public init(
         profile: UserProfile,
-        onUpdateProfile: @escaping (String, String, UserGender) -> Void
+        onUpdateProfile: @escaping (String, String, UserGender) -> Void,
+        onShowSettings: (() -> Void)? = nil
     ) {
         self.profile = profile
         self.onUpdateProfile = onUpdateProfile
+        self.onShowSettings = onShowSettings
     }
 
     private var trimmedName: String {
@@ -48,6 +51,13 @@ public struct ProfileScreen: View {
             }
         }
         .navigationTitle("Profile")
+        .toolbar {
+            if let onShowSettings {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button("Settings", systemImage: "gear", action: onShowSettings)
+                }
+            }
+        }
         .onAppear { syncFromProfile() }
         .onChange(of: profile) { _, newProfile in syncFromProfile(newProfile) }
         .onChange(of: name) { _, _ in persistIfNeeded() }
