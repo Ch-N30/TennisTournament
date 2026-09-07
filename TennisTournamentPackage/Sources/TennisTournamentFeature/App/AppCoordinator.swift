@@ -89,4 +89,18 @@ public final class AppCoordinator: ObservableObject {
         userProfile = nil
         flow = .authorization
     }
+
+    public func showTournamentDetails(id: TournamentSummary.ID) {
+        selectedTab = .tournaments
+        navigationStore.push(.details(id: id))
+    }
+
+    public func showCurrentProfile() {
+        guard let userProfile else { return }
+        navigationStore.push(.profile(userID: userProfile.id))
+    }
+
+    public func popToTournamentList() {
+        navigationStore.popToRoot()
+    }
 }

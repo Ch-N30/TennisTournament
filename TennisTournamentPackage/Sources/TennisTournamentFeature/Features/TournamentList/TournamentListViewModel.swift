@@ -14,4 +14,8 @@ public final class TournamentListViewModel: ObservableObject {
     public func loadTournaments() {
         tournaments = repository.loadTournamentSummaries()
     }
+
+    public func tournament(id: TournamentSummary.ID) -> TournamentSummary? {
+        tournaments.first { $0.id == id }
+    }
 }

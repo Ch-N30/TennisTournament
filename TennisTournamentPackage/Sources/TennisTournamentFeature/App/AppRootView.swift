@@ -23,9 +23,14 @@ public struct AppRootView: View {
                     MainTabScreen(
                         tournamentListViewModel: coordinator.tournamentListViewModel,
                         userProfile: profile,
+                        selectedTab: $coordinator.selectedTab,
+                        navigationStore: coordinator.navigationStore,
                         onUpdateProfile: { name, surname, gender in
                             coordinator.updateProfile(name: name, surname: surname, gender: gender)
-                        }
+                        },
+                        onSelectTournament: coordinator.showTournamentDetails,
+                        onShowProfile: coordinator.showCurrentProfile,
+                        onPopToTournamentList: coordinator.popToTournamentList
                     )
                 } else {
                     ProgressView("Loading profile...")
