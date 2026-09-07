@@ -14,7 +14,8 @@ let package = Package(
         )
     ],
     dependencies: [
-        .package(url: "https://github.com/Ch-N30/LoGGer.git", branch: "main")
+        .package(url: "https://github.com/Ch-N30/LoGGer.git", branch: "main"),
+        .package(url: "https://github.com/Ch-N30/PRNDS.git", exact: "0.1.0-alpha.1")
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
@@ -22,7 +23,8 @@ let package = Package(
         .target(
             name: "TennisTournamentFeature",
             dependencies: [
-                .product(name: "LoGGer", package: "LoGGer")
+                .product(name: "LoGGer", package: "LoGGer"),
+                .product(name: "PRNDSSwiftUI", package: "PRNDS")
             ]
         ),
         .testTarget(

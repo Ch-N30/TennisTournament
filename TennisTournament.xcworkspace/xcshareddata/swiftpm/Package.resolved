@@ -1,0 +1,24 @@
+{
+  "originHash" : "6724dfad15b0b6a5666d1c873398f9a007fc2184a36a6426712eb4f99fbf2bd7",
+  "pins" : [
+    {
+      "identity" : "logger",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Ch-N30/LoGGer.git",
+      "state" : {
+        "branch" : "main",
+        "revision" : "06deb085290da3d7d5875d4b3607a214e4dd1992"
+      }
+    },
+    {
+      "identity" : "prnds",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Ch-N30/PRNDS.git",
+      "state" : {
+        "revision" : "868338e8ef0ecd6690e95bc12e933b449900c1c9",
+        "version" : "0.1.0-alpha.1"
+      }
+    }
+  ],
+  "version" : 3
+}
