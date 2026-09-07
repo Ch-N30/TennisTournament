@@ -16,6 +16,7 @@ public final class MatchesCoordinator: ObservableObject {
     @Published private(set) var setupViewModel: MatchSetupViewModel?
     @Published private(set) var matchViewModel: MatchViewModel?
     private let repository: any MatchRepository
+    private var flowID = UUID()
 
     public init(repository: any MatchRepository) {
         self.repository = repository
@@ -24,9 +25,12 @@ public final class MatchesCoordinator: ObservableObject {
 
     func showSetup() {
         guard navigationStore.path.isEmpty else { return }
+        let flowID = flowID
         setupViewModel = MatchSetupViewModel(repository: repository) { [weak self] match in
-            self?.listViewModel.accept(match)
-            self?.showMatch(match)
+            guard let self else { return }
+            listViewModel.accept(match)
+            guard self.flowID == flowID, navigationStore.path == [.setup] else { return }
+            showMatch(match)
         }
         navigationStore.push(.setup)
     }
@@ -40,6 +44,7 @@ public final class MatchesCoordinator: ObservableObject {
     }
 
     func reset() {
+        flowID = UUID()
         navigationStore.popToRoot()
         setupViewModel = nil
         matchViewModel = nil

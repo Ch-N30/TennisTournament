@@ -25,16 +25,22 @@ struct MatchPlayerDraft: Identifiable {
 
 @MainActor
 final class MatchSetupViewModel: ObservableObject {
+    private struct PendingComposition {
+        let kind: MatchKind
+        let category: MatchCategory
+        let sides: [[MatchPlayerDraft]]
+    }
+
     @Published private(set) var kind: MatchKind = .singles
     @Published private(set) var category: MatchCategory = .men
     @Published var format: MatchFormat = .oneSet
-    @Published var sides = [[MatchPlayerDraft(gender: .male)], [MatchPlayerDraft(gender: .male)]]
+    @Published private(set) var sides = [[MatchPlayerDraft(gender: .male)], [MatchPlayerDraft(gender: .male)]]
     @Published private(set) var isSaving = false
     @Published private(set) var errorMessage: String?
     @Published private(set) var hasStarted = false
     @Published var showsCompositionConfirmation = false
 
-    private var pendingComposition: (MatchKind, MatchCategory, [[MatchPlayerDraft]])?
+    private var pendingComposition: PendingComposition?
     private let repository: any MatchRepository
     private let onCreated: (StandaloneMatch) -> Void
     private let matchID = UUID()
@@ -55,11 +61,11 @@ final class MatchSetupViewModel: ObservableObject {
     }
 
     func confirmComposition() {
-        guard let (kind, category, sides) = pendingComposition else { return }
-        self.kind = kind
-        self.category = category
-        self.sides = sides
-        pendingComposition = nil
+        guard let pendingComposition else { return }
+        kind = pendingComposition.kind
+        category = pendingComposition.category
+        sides = pendingComposition.sides
+        self.pendingComposition = nil
         showsCompositionConfirmation = false
         errorMessage = nil
     }
@@ -69,21 +75,41 @@ final class MatchSetupViewModel: ObservableObject {
         showsCompositionConfirmation = false
     }
 
-    func canAddProfile(_ profile: UserProfile, side: Int, position: Int) -> Bool {
-        !sides[side][position].hasInput && sides[side][position].gender == profile.gender &&
+    func player(id: UUID) -> MatchPlayerDraft? {
+        sides.flatMap { $0 }.first { $0.id == id }
+    }
+
+    func updatePlayer(id: UUID, name: String? = nil, surname: String? = nil) {
+        guard !isSaving, let (side, position) = location(of: id),
+              sides[side][position].profileID == nil else { return }
+        if let name { sides[side][position].name = name }
+        if let surname { sides[side][position].surname = surname }
+    }
+
+    func canAddProfile(_ profile: UserProfile, playerID: UUID) -> Bool {
+        guard let player = player(id: playerID) else { return false }
+        return !player.hasInput && player.gender == profile.gender &&
             !sides.flatMap({ $0 }).contains(where: { $0.profileID == profile.id })
     }
 
-    func addProfile(_ profile: UserProfile, side: Int, position: Int) {
-        guard !isSaving, canAddProfile(profile, side: side, position: position) else { return }
+    func addProfile(_ profile: UserProfile, playerID: UUID) {
+        guard !isSaving, canAddProfile(profile, playerID: playerID),
+              let (side, position) = location(of: playerID) else { return }
         sides[side][position].name = profile.name
         sides[side][position].surname = profile.surname
         sides[side][position].profileID = profile.id
     }
 
-    func clearPlayer(side: Int, position: Int) {
-        guard !isSaving else { return }
+    func clearPlayer(id: UUID) {
+        guard !isSaving, let (side, position) = location(of: id) else { return }
         sides[side][position] = MatchPlayerDraft(gender: category.gender(at: position))
+    }
+
+    private func location(of id: UUID) -> (Int, Int)? {
+        for side in sides.indices {
+            if let position = sides[side].firstIndex(where: { $0.id == id }) { return (side, position) }
+        }
+        return nil
     }
 
     func start() {
@@ -117,7 +143,8 @@ final class MatchSetupViewModel: ObservableObject {
             var remaining = side
             let result = (0..<kind.playersPerSide).map { position in
                 let gender = category.gender(at: position)
-                if let index = remaining.firstIndex(where: { $0.gender == gender }) {
+                let filledIndex = remaining.firstIndex { $0.gender == gender && $0.hasInput }
+                if let index = filledIndex ?? remaining.firstIndex(where: { $0.gender == gender }) {
                     return remaining.remove(at: index)
                 }
                 return MatchPlayerDraft(gender: gender)
@@ -125,7 +152,7 @@ final class MatchSetupViewModel: ObservableObject {
             dropsInput = dropsInput || remaining.contains(where: \.hasInput)
             return result
         }
-        pendingComposition = (kind, category, newSides)
+        pendingComposition = PendingComposition(kind: kind, category: category, sides: newSides)
         if dropsInput { showsCompositionConfirmation = true } else { confirmComposition() }
     }
 }

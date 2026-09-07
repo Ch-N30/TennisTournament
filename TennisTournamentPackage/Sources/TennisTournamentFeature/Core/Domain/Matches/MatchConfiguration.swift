@@ -68,7 +68,8 @@ struct MatchConfiguration: Codable, Equatable, Sendable {
 }
 
 enum MatchRuleError: LocalizedError {
-    case invalidParticipants, duplicatePlayer, finished, tieBreakRequired, invalidTieBreak, nothingToUndo, invalidHistory
+    case invalidParticipants, duplicatePlayer, finished, tieBreakRequired
+    case invalidTieBreak, nothingToUndo, invalidHistory
 
     var errorDescription: String? {
         switch self {
