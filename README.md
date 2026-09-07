@@ -6,6 +6,7 @@ This repository contains an iOS application for managing tennis tournaments with
 ## Stack
 - SwiftUI
 - MVVM + Coordinator navigation
+- PRNDSwift `0.1.0-alpha.1` for typed stack and modal navigation state
 - Domain layer in pure Swift
 - Persistence (later): SwiftData/CoreData
 - Tests: Swift Testing and XCTest (UI)
@@ -55,7 +56,21 @@ swiftlint --fix --config .swiftlint.yml
 - Onboarding screen
 - Authorization screen (surname + gender, local persistence)
 - Main tabs: Matches, Tournaments, Profile
+- PRNDS flow: Tournament list -> Details -> Profile -> Settings sheet
 - Match setup and tournament setup screens are intentionally postponed
+
+## Deep links
+
+The application registers the `tennistournament` URL scheme for the integrated
+tournament flow:
+
+- `tennistournament://tournaments/<UUID>` opens tournament details.
+- `tennistournament://tournaments/<UUID>/profile` opens details and then the current profile.
+- `tennistournament://tournaments/<UUID>/edit` opens details and presents the editor.
+- `tennistournament://settings` presents settings.
+
+The in-memory sample tournaments use stable UUIDs ending in `0001` and `0002`.
+Unknown schemes, paths, and tournament identifiers are ignored.
 
 ## Repo structure
 - `/Users/nikolaychunikhin/TennisTournament/README.md` - onboarding and scope
