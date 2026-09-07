@@ -1,6 +1,30 @@
 import SwiftUI
 
 public struct AppRootView: View {
+    @StateObject private var bootstrap: AppBootstrap
+
+    public init() {
+        _bootstrap = StateObject(wrappedValue: AppBootstrap())
+    }
+
+    public init(coordinator: AppCoordinator) {
+        _bootstrap = StateObject(wrappedValue: AppBootstrap(coordinator: coordinator))
+    }
+
+    public var body: some View {
+        if let coordinator = bootstrap.coordinator {
+            AppFlowView(coordinator: coordinator)
+        } else {
+            ContentUnavailableView(
+                "Unable to start",
+                systemImage: "exclamationmark.triangle",
+                description: Text("Application setup failed. Please restart the app.")
+            )
+        }
+    }
+}
+
+private struct AppFlowView: View {
     @StateObject private var coordinator: AppCoordinator
 
     public init(coordinator: AppCoordinator = AppCoordinator()) {

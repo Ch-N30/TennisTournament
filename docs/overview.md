@@ -21,5 +21,7 @@ Deliver an iOS app to run tennis tournaments with classic rules, predictable sco
 - `Ruleset`: scoring and ranking rules (including tie-break behavior)
 
 ## Notes
+- Tournament dependency assembly uses JustContainer in the composition root; see
+  `specs/justcontainer-integration.md` for local-package and CI constraints.
 - Persistence implementation is postponed until architecture and domain contracts stabilize.
 - Detailed feature requirements belong in `docs/specs/*.md`.
