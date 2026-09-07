@@ -1,6 +1,7 @@
 import Combine
 import Foundation
 import LoGGer
+import PRNDSSwiftUI
 
 public enum AppFlow: Equatable {
     case onboarding
@@ -12,8 +13,10 @@ public enum AppFlow: Equatable {
 public final class AppCoordinator: ObservableObject {
     @Published public private(set) var flow: AppFlow
     @Published public private(set) var userProfile: UserProfile?
+    @Published public var selectedTab: AppTab = .matches
 
     public let tournamentListViewModel: TournamentListViewModel
+    public let navigationStore: SwiftUINavigationStore<AppRoute, AppModalRoute>
 
     private let dependencies: AppDependencyContainer
     private let appLogger: ScopedLogger
@@ -22,6 +25,7 @@ public final class AppCoordinator: ObservableObject {
         self.dependencies = dependencies
         self.appLogger = dependencies.logger.scoped(to: "App")
         self.tournamentListViewModel = TournamentListViewModel(repository: dependencies.tournamentRepository)
+        self.navigationStore = SwiftUINavigationStore()
         let profile = dependencies.sessionStore.loadUserProfile()
         self.userProfile = profile
 
@@ -70,7 +74,12 @@ public final class AppCoordinator: ObservableObject {
             return
         }
 
-        let profile = UserProfile(name: normalizedName, surname: normalizedSurname, gender: gender)
+        let profile = UserProfile(
+            id: userProfile?.id ?? UUID(),
+            name: normalizedName,
+            surname: normalizedSurname,
+            gender: gender
+        )
         dependencies.sessionStore.saveUserProfile(profile)
         userProfile = profile
     }
