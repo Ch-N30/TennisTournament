@@ -5,6 +5,7 @@ public struct MainTabScreen: View {
     @Binding private var selectedTab: AppTab
     @ObservedObject private var navigationStore: SwiftUINavigationStore<AppRoute, AppModalRoute>
     @ObservedObject private var tournamentListViewModel: TournamentListViewModel
+    private let matchesCoordinator: MatchesCoordinator
 
     private let userProfile: UserProfile
     private let onUpdateProfile: (String, String, UserGender) -> Void
@@ -16,6 +17,7 @@ public struct MainTabScreen: View {
     private let onDismissModal: () -> Void
 
     public init(
+        matchesCoordinator: MatchesCoordinator,
         tournamentListViewModel: TournamentListViewModel,
         userProfile: UserProfile,
         selectedTab: Binding<AppTab>,
@@ -28,6 +30,7 @@ public struct MainTabScreen: View {
         onShowTournamentEditor: @escaping (TournamentSummary.ID) -> Void,
         onDismissModal: @escaping () -> Void
     ) {
+        self.matchesCoordinator = matchesCoordinator
         self.tournamentListViewModel = tournamentListViewModel
         self.userProfile = userProfile
         _selectedTab = selectedTab
@@ -43,25 +46,26 @@ public struct MainTabScreen: View {
 
     public var body: some View {
         TabView(selection: $selectedTab) {
-            NavigationStack {
-                MatchesHomeScreen()
-            }
+            MatchesFlowView(
+                coordinator: matchesCoordinator,
+                navigationStore: matchesCoordinator.navigationStore,
+                profile: userProfile
+            )
             .tabItem {
-                Label("Matches", systemImage: "sportscourt")
+                Label("Матчи", systemImage: "sportscourt")
             }
             .tag(AppTab.matches)
 
-            NavigationStack(path: navigationStore.pathBinding) {
-                TournamentsHomeScreen(
-                    viewModel: tournamentListViewModel,
-                    onSelectTournament: onSelectTournament
+            NavigationStack {
+                ContentUnavailableView(
+                    "Скоро будет",
+                    systemImage: "trophy",
+                    description: Text("Турниры появятся в следующей версии. Пока можно вести отдельные матчи.")
                 )
-                .navigationDestination(for: AppRoute.self) { route in
-                    destination(for: route)
-                }
+                .navigationTitle("Турниры")
             }
             .tabItem {
-                Label("Tournaments", systemImage: "list.bullet.rectangle")
+                Label("Турниры", systemImage: "list.bullet.rectangle")
             }
             .tag(AppTab.tournaments)
 
@@ -69,7 +73,7 @@ public struct MainTabScreen: View {
                 ProfileScreen(profile: userProfile, onUpdateProfile: onUpdateProfile)
             }
             .tabItem {
-                Label("Profile", systemImage: "person.crop.circle")
+                Label("Профиль", systemImage: "person.crop.circle")
             }
             .tag(AppTab.profile)
         }

@@ -45,6 +45,7 @@ private struct AppFlowView: View {
             case .appTabs:
                 if let profile = coordinator.userProfile {
                     MainTabScreen(
+                        matchesCoordinator: coordinator.matchesCoordinator,
                         tournamentListViewModel: coordinator.tournamentListViewModel,
                         userProfile: profile,
                         selectedTab: $coordinator.selectedTab,

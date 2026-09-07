@@ -16,6 +16,7 @@ public final class AppCoordinator: ObservableObject {
     @Published public var selectedTab: AppTab = .matches
 
     public let tournamentListViewModel: TournamentListViewModel
+    public let matchesCoordinator: MatchesCoordinator
     public let navigationStore: SwiftUINavigationStore<AppRoute, AppModalRoute>
 
     private let dependencies: AppDependencyContainer
@@ -31,6 +32,7 @@ public final class AppCoordinator: ObservableObject {
         self.appLogger = dependencies.logger.scoped(to: "App")
         self.deepLinkParser = deepLinkParser
         self.tournamentListViewModel = TournamentListViewModel(repository: dependencies.tournamentRepository)
+        self.matchesCoordinator = MatchesCoordinator(repository: dependencies.matchRepository)
         self.navigationStore = SwiftUINavigationStore()
         let profile = dependencies.sessionStore.loadUserProfile()
         self.userProfile = profile
@@ -96,13 +98,14 @@ public final class AppCoordinator: ObservableObject {
         dependencies.sessionStore.clearUserProfile()
         navigationStore.popToRoot()
         navigationStore.dismissModal()
+        matchesCoordinator.reset()
         userProfile = nil
         flow = .authorization
     }
 
     public func showTournamentDetails(id: TournamentSummary.ID) {
         selectedTab = .tournaments
-        navigationStore.push(.details(id: id))
+        // Tournament entry points are paused for the standalone-match MVP.
     }
 
     public func showCurrentProfile() {
@@ -119,7 +122,7 @@ public final class AppCoordinator: ObservableObject {
     }
 
     public func showTournamentEditor(id: TournamentSummary.ID) {
-        navigationStore.present(.editor(itemID: id))
+        // Retained for the postponed tournament flow; no presentation in this MVP.
     }
 
     public func dismissModal() {
@@ -129,6 +132,7 @@ public final class AppCoordinator: ObservableObject {
     @discardableResult
     public func handleDeepLink(_ url: URL) -> Bool {
         guard let deepLink = deepLinkParser.parse(url) else { return false }
+        guard case .settings = deepLink else { return false }
 
         guard flow == .appTabs else {
             pendingDeepLink = deepLink
