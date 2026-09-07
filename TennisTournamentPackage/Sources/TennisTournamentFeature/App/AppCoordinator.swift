@@ -20,10 +20,16 @@ public final class AppCoordinator: ObservableObject {
 
     private let dependencies: AppDependencyContainer
     private let appLogger: ScopedLogger
+    private let deepLinkParser: AppDeepLinkParser
+    private var pendingDeepLink: AppDeepLink?
 
-    public init(dependencies: AppDependencyContainer = AppDependencyContainer()) {
+    public init(
+        dependencies: AppDependencyContainer = AppDependencyContainer(),
+        deepLinkParser: AppDeepLinkParser = AppDeepLinkParser()
+    ) {
         self.dependencies = dependencies
         self.appLogger = dependencies.logger.scoped(to: "App")
+        self.deepLinkParser = deepLinkParser
         self.tournamentListViewModel = TournamentListViewModel(repository: dependencies.tournamentRepository)
         self.navigationStore = SwiftUINavigationStore()
         let profile = dependencies.sessionStore.loadUserProfile()
@@ -51,6 +57,7 @@ public final class AppCoordinator: ObservableObject {
         flow = dependencies.sessionStore.loadUserProfile() == nil ? .authorization : .appTabs
         if flow == .appTabs {
             userProfile = dependencies.sessionStore.loadUserProfile()
+            openPendingDeepLinkIfPossible()
         }
     }
 
@@ -65,6 +72,7 @@ public final class AppCoordinator: ObservableObject {
         dependencies.sessionStore.saveUserProfile(profile)
         userProfile = profile
         flow = .appTabs
+        openPendingDeepLinkIfPossible()
     }
 
     public func updateProfile(name: String, surname: String, gender: UserGender) {
@@ -114,5 +122,47 @@ public final class AppCoordinator: ObservableObject {
 
     public func dismissModal() {
         navigationStore.dismissModal()
+    }
+
+    @discardableResult
+    public func handleDeepLink(_ url: URL) -> Bool {
+        guard let deepLink = deepLinkParser.parse(url) else { return false }
+
+        guard flow == .appTabs else {
+            pendingDeepLink = deepLink
+            return true
+        }
+
+        return open(deepLink)
+    }
+
+    private func openPendingDeepLinkIfPossible() {
+        guard let pendingDeepLink else { return }
+        self.pendingDeepLink = nil
+        _ = open(pendingDeepLink)
+    }
+
+    private func open(_ deepLink: AppDeepLink) -> Bool {
+        switch deepLink {
+        case .settings:
+            navigationStore.present(.settings)
+            return true
+        case .tournamentDetails(let id):
+            return openTournament(id: id, pathSuffix: [])
+        case .tournamentProfile(let id):
+            guard let userProfile else { return false }
+            return openTournament(id: id, pathSuffix: [.profile(userID: userProfile.id)])
+        case .tournamentEditor(let id):
+            guard openTournament(id: id, pathSuffix: []) else { return false }
+            navigationStore.present(.editor(itemID: id))
+            return true
+        }
+    }
+
+    private func openTournament(id: TournamentSummary.ID, pathSuffix: [AppRoute]) -> Bool {
+        guard tournamentListViewModel.tournament(id: id) != nil else { return false }
+        selectedTab = .tournaments
+        navigationStore.setPath([.details(id: id)] + pathSuffix)
+        return true
     }
 }

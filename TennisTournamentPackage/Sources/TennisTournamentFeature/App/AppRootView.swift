@@ -40,5 +40,8 @@ public struct AppRootView: View {
                 }
             }
         }
+        .onOpenURL { url in
+            coordinator.handleDeepLink(url)
+        }
     }
 }
