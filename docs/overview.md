@@ -7,7 +7,8 @@ Deliver an iOS app to run tennis tournaments with classic rules, predictable sco
 - First tab: match history, unfinished matches first; creation with the top-right plus button.
 - Singles and doubles; men's, women's and mixed doubles categories.
 - Setup → game-by-game scoring → saved result, with persistent undo and resume.
-- One set or best-of-three; a standard tie-break at 6:6 in every set.
+- One set, best-of-three or best-of-five; a standard tie-break at 6:6 in every set.
+- Swipe-to-delete with confirmation removes a match and its history from local storage.
 - Local, device-wide storage; no cloud sync or account-specific match history yet.
 - Tournaments tab shows «Скоро будет». Existing tournament code remains, but
   tournament entry points and deep links are disabled. Settings links remain active.

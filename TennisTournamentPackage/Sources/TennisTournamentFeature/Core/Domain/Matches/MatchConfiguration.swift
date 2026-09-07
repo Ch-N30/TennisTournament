@@ -24,10 +24,26 @@ enum MatchCategory: String, Codable, CaseIterable, Sendable {
 }
 
 enum MatchFormat: String, Codable, CaseIterable, Sendable {
-    case oneSet, bestOfThree
+    case oneSet, bestOfThree, bestOfFive
 
-    var title: String { self == .oneSet ? "Один сет" : "До двух выигранных сетов" }
-    var setsToWin: Int { self == .oneSet ? 1 : 2 }
+    var title: String {
+        switch self {
+        case .oneSet: "Один сет"
+        case .bestOfThree: "До двух выигранных сетов"
+        case .bestOfFive: "До трёх выигранных сетов"
+        }
+    }
+
+    var setsToWin: Int {
+        switch self {
+        case .oneSet: 1
+        case .bestOfThree: 2
+        case .bestOfFive: 3
+        }
+    }
+
+    var maximumSets: Int { setsToWin * 2 - 1 }
+    var setsCountTitle: String { self == .oneSet ? "1 сет" : "До \(maximumSets) сетов" }
 }
 
 struct MatchPlayer: Codable, Equatable, Identifiable, Sendable {

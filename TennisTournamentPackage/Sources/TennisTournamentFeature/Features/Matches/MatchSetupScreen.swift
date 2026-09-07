@@ -17,9 +17,15 @@ struct MatchSetupScreen: View {
                 )) {
                     ForEach(viewModel.categories, id: \.self) { Text($0.title).tag($0) }
                 }
-                Picker("Продолжительность", selection: $viewModel.format) {
+                Picker("Побед для завершения", selection: $viewModel.format) {
                     ForEach(MatchFormat.allCases, id: \.self) { Text($0.title).tag($0) }
                 }
+                Picker("Количество сетов", selection: $viewModel.format) {
+                    ForEach(MatchFormat.allCases, id: \.self) { Text($0.setsCountTitle).tag($0) }
+                }
+                Text("\(viewModel.format.title). Максимальное количество сетов — \(viewModel.format.maximumSets). " +
+                     "Эти настройки связаны; все сеты играть необязательно.")
+                    .font(.footnote).foregroundStyle(.secondary)
             }
             ForEach(0..<2, id: \.self) { side in
                 Section("Сторона \(side + 1)") {
