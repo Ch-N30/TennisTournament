@@ -4,6 +4,7 @@ public protocol MatchRepository: Sendable {
     func loadMatches() async throws -> [StandaloneMatch]
     func create(_ match: StandaloneMatch) async throws -> StandaloneMatch
     func apply(_ action: MatchAction, to id: UUID, revision: Int) async throws -> StandaloneMatch
+    func delete(id: UUID, revision: Int) async throws
 }
 
 enum MatchStorageError: LocalizedError {
@@ -64,6 +65,14 @@ public actor LocalMatchRepository: MatchRepository {
         archive.matches[index] = updated
         try writeArchive(archive)
         return updated
+    }
+
+    public func delete(id: UUID, revision: Int) throws {
+        var archive = try readArchive()
+        guard let index = archive.matches.firstIndex(where: { $0.id == id }) else { return }
+        guard archive.matches[index].revision == revision else { throw MatchStorageError.conflict }
+        archive.matches.remove(at: index)
+        try writeArchive(archive)
     }
 
     private func readArchive() throws -> Archive {

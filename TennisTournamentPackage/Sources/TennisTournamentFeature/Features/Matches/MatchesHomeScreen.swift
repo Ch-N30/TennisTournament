@@ -22,7 +22,7 @@ struct MatchesHomeScreen: View {
                     if let error = viewModel.errorMessage {
                         Section {
                             Text(error).foregroundStyle(.red)
-                            Button("Повторить загрузку") { Task { await viewModel.load() } }
+                            Button("Обновить список") { Task { await viewModel.load() } }
                         }
                     }
                     matchSection("В процессе", matches: viewModel.matches.filter { !$0.isFinished })
@@ -39,6 +39,16 @@ struct MatchesHomeScreen: View {
             }
         }
         .task { await viewModel.load() }
+        .alert("Удалить матч?", isPresented: Binding(
+            get: { viewModel.pendingDeletion != nil },
+            set: { if !$0 { viewModel.pendingDeletion = nil } }
+        ), presenting: viewModel.pendingDeletion) { match in
+            Button("Отмена", role: .cancel) { viewModel.pendingDeletion = nil }
+            Button("Удалить", role: .destructive) { viewModel.confirmDeletion(match) }
+        } message: { match in
+            Text("\(match.sideName(.first)) против \(match.sideName(.second)). " +
+                 "Матч и вся история счёта будут удалены без возможности восстановления.")
+        }
     }
 
     @ViewBuilder
@@ -49,6 +59,7 @@ struct MatchesHomeScreen: View {
                     Button { onSelect(match) } label: {
                         VStack(alignment: .leading, spacing: 8) {
                             HStack {
+                                if viewModel.deletingID == match.id { ProgressView() }
                                 Text(match.statusTitle).font(.caption.bold())
                                     .foregroundStyle(match.isFinished ? Color.secondary : Color.green)
                                 Spacer()
@@ -66,6 +77,13 @@ struct MatchesHomeScreen: View {
                         .contentShape(Rectangle())
                     }
                     .buttonStyle(.plain)
+                    .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                        Button { viewModel.requestDeletion(match) } label: {
+                            Label("Удалить", systemImage: "trash")
+                        }
+                        .tint(.red)
+                    }
+                    .disabled(viewModel.isLoading || viewModel.deletingID != nil)
                 }
             }
         }
