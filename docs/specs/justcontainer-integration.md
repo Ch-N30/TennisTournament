@@ -29,6 +29,12 @@ deployment target and package's iOS 18 target are unchanged.
 
 ## Verification
 
+The results below describe the earlier DI baseline, not standalone-match feature validation.
+The standalone MVP additionally resolves a singleton `any MatchRepository` backed by
+`LocalMatchRepository`, injecting it into the MatchesCoordinator/ViewModel/screen flow.
+Its actor serializes persistence; factories do not read or write files. See
+`standalone-match.md` for the build-only verification exception and manual acceptance.
+
 - Xcode workspace build and 23 unit tests passed on iPhone 17 Pro / iOS 26.5.
 - Tests include live graph assembly and propagation of an assembly failure.
 - SwiftLint strict: zero violations; no new concurrency diagnostics in the final build.
