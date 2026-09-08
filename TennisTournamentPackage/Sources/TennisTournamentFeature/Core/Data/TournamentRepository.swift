@@ -9,8 +9,16 @@ public struct InMemoryTournamentRepository: TournamentRepository {
 
     public func loadTournamentSummaries() -> [TournamentSummary] {
         [
-            TournamentSummary(name: "City Open", format: "Groups + Playoff"),
-            TournamentSummary(name: "Weekend Cup", format: "Single Elimination")
+            TournamentSummary(
+                id: UUID(uuid: (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1)),
+                name: "City Open",
+                format: "Groups + Playoff"
+            ),
+            TournamentSummary(
+                id: UUID(uuid: (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2)),
+                name: "Weekend Cup",
+                format: "Single Elimination"
+            )
         ]
     }
 }

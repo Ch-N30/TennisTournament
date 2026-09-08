@@ -40,7 +40,15 @@ public final class UserDefaultsAppSessionStore: AppSessionStoring {
         guard let data = userDefaults.data(forKey: Keys.userProfile) else {
             return nil
         }
-        return try? decoder.decode(UserProfile.self, from: data)
+        guard let profile = try? decoder.decode(UserProfile.self, from: data) else {
+            return nil
+        }
+
+        if isLegacyProfile(data) {
+            saveUserProfile(profile)
+        }
+
+        return profile
     }
 
     public func saveUserProfile(_ profile: UserProfile) {
@@ -52,5 +60,12 @@ public final class UserDefaultsAppSessionStore: AppSessionStoring {
 
     public func clearUserProfile() {
         userDefaults.removeObject(forKey: Keys.userProfile)
+    }
+
+    private func isLegacyProfile(_ data: Data) -> Bool {
+        guard let object = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else {
+            return false
+        }
+        return object["id"] == nil
     }
 }

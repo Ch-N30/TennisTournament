@@ -26,6 +26,7 @@ xcuserdata/
 .build/
 .swiftpm/
 Package.resolved
+!TennisTournament.xcworkspace/xcshareddata/swiftpm/Package.resolved
 
 # Fastlane
 fastlane/report.xml

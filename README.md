@@ -6,8 +6,9 @@ This repository contains an iOS application for managing tennis tournaments with
 ## Stack
 - SwiftUI
 - MVVM + Coordinator navigation
+- PRNDSwift `0.1.0-alpha.1` for typed stack and modal navigation state
 - Domain layer in pure Swift
-- Persistence (later): SwiftData/CoreData
+- Standalone match persistence: versioned local JSON behind a repository protocol
 - Tests: Swift Testing and XCTest (UI)
 
 ## Getting started
@@ -38,11 +39,11 @@ Apply safe autocorrections:
 swiftlint --fix --config .swiftlint.yml
 ```
 
-## MVP scope (draft)
-- Tournament setup for common formats (groups + playoff)
-- Match score tracking
-- Standings and progression
-- Deterministic tie-break behavior covered by unit tests
+## Current MVP scope
+- Standalone singles/doubles setup, completed-game scoring and tie-break results
+- Persistent match history, resume and undo, with JustContainer dependency assembly
+- Tournaments postponed behind «Скоро будет»; existing domain code retained
+- This feature uses build-only verification by explicit user request; behavior needs manual acceptance
 
 ## Current architecture baseline
 - `TennisTournament/` - app shell target
@@ -55,7 +56,20 @@ swiftlint --fix --config .swiftlint.yml
 - Onboarding screen
 - Authorization screen (surname + gender, local persistence)
 - Main tabs: Matches, Tournaments, Profile
-- Match setup and tournament setup screens are intentionally postponed
+- Independent PRNDS match flow: Match list -> Setup -> Scoring/result
+- Tournament setup remains postponed; profile functionality remains available
+- JustContainer currently uses an absolute local package path; see
+  `docs/specs/justcontainer-integration.md` before building on another machine or CI
+
+## Deep links
+
+The application registers the `tennistournament` URL scheme.
+During the standalone-match MVP:
+
+- `tennistournament://tournaments/<UUID>` and its `/profile` and `/edit` variants are disabled.
+- `tennistournament://settings` presents settings.
+
+Unknown schemes and paths are ignored. Tournament source code is retained for a later version.
 
 ## Repo structure
 - `/Users/nikolaychunikhin/TennisTournament/README.md` - onboarding and scope

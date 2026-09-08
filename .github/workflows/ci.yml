@@ -80,3 +80,6 @@ jobs:
         run: |
           set -euo pipefail
           swiftlint lint --strict --config .swiftlint.yml
+
+  # Build/test CI is temporarily deferred until package access and portable
+  # JustContainer resolution are configured. See docs/specs/standalone-match.md.

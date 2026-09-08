@@ -14,6 +14,22 @@ struct TournamentListViewModelTests {
 
         #expect(viewModel.tournaments == expected)
     }
+
+    @Test("Updates an existing tournament without changing its identity")
+    func updatesTournament() {
+        let id = UUID(uuidString: "00000000-0000-0000-0000-000000000001")!
+        let viewModel = TournamentListViewModel(
+            repository: StubTournamentRepository(
+                items: [TournamentSummary(id: id, name: "Old name", format: "Old format")]
+            )
+        )
+
+        viewModel.updateTournament(id: id, name: "New name", format: "Groups + Playoff")
+
+        #expect(viewModel.tournaments == [
+            TournamentSummary(id: id, name: "New name", format: "Groups + Playoff")
+        ])
+    }
 }
 
 private struct StubTournamentRepository: TournamentRepository {
